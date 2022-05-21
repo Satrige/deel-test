@@ -1,10 +1,26 @@
-const { getUserContractById } = require('../services/contracts');
+const { getUserContractById, findUserNonTerminatedContracts } = require('../services/contracts');
+
+const find = async (req, res) => {
+  try {
+    const { limit, offset } = req.query;
+
+    const contracts = await findUserNonTerminatedContracts({
+      user: req.profile,
+      limit,
+      offset,
+    });
+
+    res.json(contracts);
+  } catch (err) {
+    return res.status(500).end();
+  }
+};
 
 const get = async (req, res) => {
   try {
     const contract = await getUserContractById({
       user: req.profile,
-      contractId: req.get.id,
+      contractId: req.params.id,
     });
 
     if (!contract) {
@@ -18,5 +34,6 @@ const get = async (req, res) => {
 };
 
 module.exports = {
+  find,
   get,
 };
