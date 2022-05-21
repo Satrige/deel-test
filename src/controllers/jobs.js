@@ -1,4 +1,4 @@
-const { findUnpaidJobsForActiveContracts } = require('../services/jobs');
+const { findUnpaidJobsForActiveContracts, payForJob } = require('../services/jobs');
 
 const findUnpaid = async (req, res) => {
   try {
@@ -18,7 +18,9 @@ const findUnpaid = async (req, res) => {
 
 const pay = async (req, res) => {
   try {
-    res.end('not_yet');
+    await payForJob({ user: req.profile, jobId: req.params.job_id });
+
+    res.status(202).end();
   } catch (err) {
     return res.status(500).end();
   }
