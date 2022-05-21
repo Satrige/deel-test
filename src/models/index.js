@@ -1,12 +1,13 @@
 const Sequelize = require('sequelize');
-const { Profile } = require('./profile');
-const { Contract } = require('./contract');
-const { Job } = require('./job');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './database.sqlite3',
 });
+
+const Profile = require('./profile')(sequelize);
+const Contract = require('./contract')(sequelize);
+const Job = require('./job')(sequelize);
 
 Profile.hasMany(Contract, { as: 'Contractor', foreignKey: 'ContractorId' });
 Contract.belongsTo(Profile, { as: 'Contractor' });

@@ -1,33 +1,31 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite3',
-});
+module.exports = (sequelize) => {
+  class Job extends Sequelize.Model {}
 
-class Job extends Sequelize.Model {}
-Job.init(
-  {
-    description: {
-      type: Sequelize.TEXT,
-      allowNull: false,
+  Job.init(
+    {
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      price: {
+        type: Sequelize.DECIMAL(12, 2),
+        allowNull: false,
+      },
+      paid: {
+        type: Sequelize.BOOLEAN,
+        default: false,
+      },
+      paymentDate: {
+        type: Sequelize.DATE,
+      },
     },
-    price: {
-      type: Sequelize.DECIMAL(12, 2),
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'Job',
     },
-    paid: {
-      type: Sequelize.BOOLEAN,
-      default: false,
-    },
-    paymentDate: {
-      type: Sequelize.DATE,
-    },
-  },
-  {
-    sequelize,
-    modelName: 'Job',
-  },
-);
+  );
 
-module.exports = { Job };
+  return Job;
+};

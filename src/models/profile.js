@@ -1,36 +1,34 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite3',
-});
+module.exports = (sequelize) => {
+  class Profile extends Sequelize.Model {}
 
-class Profile extends Sequelize.Model {}
-Profile.init(
-  {
-    firstName: {
-      type: Sequelize.STRING,
-      allowNull: false,
+  Profile.init(
+    {
+      firstName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      profession: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      balance: {
+        type: Sequelize.DECIMAL(12, 2),
+      },
+      type: {
+        type: Sequelize.ENUM('client', 'contractor'),
+      },
     },
-    lastName: {
-      type: Sequelize.STRING,
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'Profile',
     },
-    profession: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    balance: {
-      type: Sequelize.DECIMAL(12, 2),
-    },
-    type: {
-      type: Sequelize.ENUM('client', 'contractor'),
-    },
-  },
-  {
-    sequelize,
-    modelName: 'Profile',
-  },
-);
+  );
 
-module.export = { Profile };
+  return Profile;
+};
