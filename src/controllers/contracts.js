@@ -6,6 +6,7 @@ const find = async (req, res) => {
 
     const contracts = await findUserNonTerminatedContracts({
       user: req.profile,
+      order: [['id', 'ASC']],
       limit,
       offset,
     });
