@@ -4,7 +4,10 @@ const pino = require('pino-http')();
 
 const { sequelize } = require('./models');
 const { getProfile } = require('./middlewares/getProfile');
+
+// Routes
 const contractsRouter = require('./routes/contracts');
+const jobsRouter = require('./routes/jobs');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,5 +19,6 @@ app.set('models', sequelize.models);
 app.use(getProfile);
 
 app.use('/contracts', contractsRouter);
+app.use('/jobs', jobsRouter);
 
 module.exports = app;

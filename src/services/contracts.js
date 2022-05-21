@@ -1,23 +1,19 @@
 const logger = require('pino')();
 const { Op } = require('sequelize');
 const { Contract } = require('../models');
-
-const formContractQuery = (user) => {
-  const { id: userId, type: userType } = user;
-
-  if (userType === 'client') {
-    return { ClientId: userId };
-  }
-
-  return { ContractorId: userId };
-};
+const { formContractQuery } = require('./helpers');
 
 const findUserNonTerminatedContracts = async ({ user, limit = 1000, offset = 0 }) => {
   try {
     const query = formContractQuery(user);
     query.status = { [Op.ne]: 'terminated' };
 
-    const contracts = await Contract.findAll({ where: query, limit, offset });
+    const contracts = await Contract.findAll({
+      where: query,
+      order: [['id', 'ASC']],
+      limit,
+      offset,
+    });
 
     return contracts;
   } catch (err) {

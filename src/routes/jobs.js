@@ -1,15 +1,15 @@
 const express = require('express');
 const Joi = require('joi');
-const contractsController = require('../controllers/contracts');
+const jobsController = require('../controllers/jobs');
 const validate = require('../middlewares/validate');
 
 const router = express.Router();
 
-router.get('/', validate(Joi.object({
+router.get('/unpaid', validate(Joi.object({
   limit: Joi.number().integer().positive(),
   offset: Joi.number().integer().greater(-1),
-})), contractsController.find);
+})), jobsController.findUnpaid);
 
-router.get('/:id', validate(Joi.object({ id: Joi.number().integer().positive() })), contractsController.get);
+router.post('/:job_id/pay', validate(Joi.object({ job_id: Joi.number().integer().positive() })), jobsController.pay);
 
 module.exports = router;
