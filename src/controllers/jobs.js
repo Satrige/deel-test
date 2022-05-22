@@ -1,4 +1,5 @@
 const { findUnpaidJobsForActiveContracts, payForJob } = require('../services/jobs');
+const UserError = require('../helpers/userError');
 
 const findUnpaid = async (req, res) => {
   try {
@@ -22,6 +23,10 @@ const pay = async (req, res) => {
 
     res.status(202).end();
   } catch (err) {
+    if (err instanceof UserError && err.errorCode === 1000) {
+      return res.status(500).end(err.message);
+    }
+
     return res.status(500).end();
   }
 };
