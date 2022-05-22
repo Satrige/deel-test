@@ -6,7 +6,7 @@ const validate = require('../middlewares/validate');
 const router = express.Router();
 
 router.post('/deposit/:amount', validate(Joi.object({
-  amount: Joi.number().integer().positive(),
+  amount: Joi.number().integer().positive().required(),
 })), balancesController.deposit);
 
 module.exports = router;
