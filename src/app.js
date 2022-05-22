@@ -8,6 +8,7 @@ const { getProfile } = require('./middlewares/getProfile');
 // Routes
 const contractsRouter = require('./routes/contracts');
 const jobsRouter = require('./routes/jobs');
+const balancesRouter = require('./routes/balances');
 
 const app = express();
 app.use(bodyParser.json());
@@ -20,5 +21,6 @@ app.use(getProfile);
 
 app.use('/contracts', contractsRouter);
 app.use('/jobs', jobsRouter);
+app.use('/balances', balancesRouter);
 
 module.exports = app;
