@@ -13,7 +13,7 @@ router.get('/best-profession', validate(Joi.object({
 router.get('/best-clients', validate(Joi.object({
   start: Joi.date().format('YYYY-MM-DD').required(),
   end: Joi.date().format('YYYY-MM-DD').required(),
-  limit: Joi.number().integer().positive().required(),
+  limit: Joi.number().integer().positive(),
 })), adminController.findBestClients);
 
 module.exports = router;

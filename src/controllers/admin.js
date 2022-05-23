@@ -30,14 +30,18 @@ const findBestClients = async (req, res) => {
   try {
     const { start, end, limit } = req.query;
 
-    const profession = await filterClients({
+    const clients = await filterClients({
       type: CLIENT_TYPES.MOST_PAYING,
       limit,
-      start: new Date(start),
-      end: new Date(end),
+      start,
+      end,
     });
 
-    res.end(profession);
+    if (!clients.length) {
+      return res.status(404).end('Maybe wrong period of time');
+    }
+
+    res.json(clients);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
       return res.status(500).end(err.message);

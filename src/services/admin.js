@@ -16,7 +16,7 @@ const filterProfession = async ({ type, start, end }) => {
           SELECT Profiles.profession, Contracts.id, SUM(Jobs.price) AS sumPrice FROM Contracts
           LEFT JOIN Profiles ON ContractorId = Profiles.id
           LEFT JOIN Jobs ON Contracts.id = Jobs.ContractId
-          WHERE Jobs.paid = 1 AND Jobs.createdAt BETWEEN '${start}' AND '${end}'
+          WHERE Jobs.paid IS TRUE AND Jobs.createdAt BETWEEN '${start}' AND '${end}'
           GROUP BY Profiles.profession
         )
       `,
@@ -39,8 +39,41 @@ const filterProfession = async ({ type, start, end }) => {
   }
 };
 
-const filterClients = () => {
-  return 'Roma';
+const filterClients = async ({
+  type, start, end, limit = 2,
+}) => {
+  try {
+    if (type !== CLIENT_TYPES.MOST_PAYING) {
+      throw new UserError('Wrong filter type', 1000);
+    }
+
+    const clients = await sequelize.query(
+      `
+        SELECT Profiles.*, SUM(Jobs.price) AS totalPaid from Profiles
+        LEFT JOIN Contracts on Contracts.ClientId = Profiles.id
+        LEFT JOIN Jobs on Jobs.ContractId = Contracts.id
+        WHERE Jobs.paid IS TRUE AND Jobs.paymentDate BETWEEN '${start}' AND '${end}'
+        GROUP BY Profiles.id
+        ORDER BY totalPaid DESC
+        LIMIT ${limit};
+      `,
+      {
+        plain: false,
+        raw: true,
+        type: QueryTypes.SELECT,
+      },
+    );
+
+    return clients;
+  } catch (err) {
+    logger.error({
+      message: 'filterClients',
+      params: { type, start, end },
+      err,
+    });
+
+    throw err;
+  }
 };
 
 module.exports = {
