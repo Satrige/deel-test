@@ -14,7 +14,7 @@ const find = async (req, res) => {
     res.json(contracts);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
-      return res.status(500).end(err.message);
+      return res.status(500).send(err.message);
     }
 
     return res.status(500).end();
@@ -26,13 +26,13 @@ const get = async (req, res) => {
     const contract = await getUserContractById({ user: req.profile, contractId: req.params.id });
 
     if (!contract) {
-      return res.status(404).end('Maybe wrong number of contract');
+      return res.status(404).send('Maybe wrong number of contract');
     }
 
     res.json(contract);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
-      return res.status(500).end(err.message);
+      return res.status(409).send(err.message);
     }
 
     return res.status(500).end();

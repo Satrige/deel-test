@@ -64,7 +64,13 @@ const filterClients = async ({
       },
     );
 
-    return clients;
+    return clients.map(
+      (client) => ({
+        id: client.id,
+        fullName: `${client.firstName} ${client.lastName}`,
+        paid: client.totalPaid,
+      }),
+    );
   } catch (err) {
     logger.error({
       message: 'filterClients',

@@ -13,13 +13,13 @@ const getTheBestProfession = async (req, res) => {
     });
 
     if (!profession) {
-      return res.status(404).end('Maybe wrong period of time');
+      return res.status(404).send('Maybe wrong period of time');
     }
 
-    res.end(profession);
+    res.send(profession);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
-      return res.status(500).end(err.message);
+      return res.status(409).send(err.message);
     }
 
     return res.status(500).end();
@@ -40,7 +40,7 @@ const findBestClients = async (req, res) => {
     res.json(clients);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
-      return res.status(500).end(err.message);
+      return res.status(409).send(err.message);
     }
 
     return res.status(500).end();

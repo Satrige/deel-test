@@ -24,7 +24,7 @@ const pay = async (req, res) => {
     res.status(202).end();
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {
-      return res.status(500).end(err.message);
+      return res.status(409).send(err.message);
     }
 
     return res.status(500).end();
