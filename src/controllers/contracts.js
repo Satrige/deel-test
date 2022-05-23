@@ -7,8 +7,8 @@ const find = async (req, res) => {
 
     const contracts = await findUserNonTerminatedContracts({
       user: req.profile,
-      limit: limit ? parseInt(limit, 10) : null,
-      offset: offset ? parseInt(limit, 10) : null,
+      limit: limit && parseInt(limit, 10),
+      offset: offset && parseInt(offset, 10),
     });
 
     res.json(contracts);
@@ -26,7 +26,7 @@ const get = async (req, res) => {
     const contract = await getUserContractById({ user: req.profile, contractId: req.params.id });
 
     if (!contract) {
-      return res.status(404).end();
+      return res.status(404).end('Maybe wrong number of contract');
     }
 
     res.json(contract);
