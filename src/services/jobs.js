@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const { Op, literal } = require('sequelize');
+
 const logger = require('pino')();
 const {
   Job, Contract,
@@ -12,10 +14,13 @@ const findUnpaidJobsForActiveContracts = async ({ user, limit = 1000, offset = 0
     const contractQuery = formContractQuery(user);
 
     const contractsWithJobs = await Contract.findAll({
-      where: { ...contractQuery },
+      where: {
+        ...contractQuery,
+        status: 'in_progress',
+      },
       include: {
         model: Job,
-        where: { paid: true },
+        where: { paid: { [Op.not]: true } },
       },
     });
 
@@ -58,23 +63,24 @@ const payForJob = async ({ user, jobId }) => {
 
     const contractorId = jobWithContract.Contract.ContractorId;
 
-    // Here is the code of transaction
     transaction = await sequelize.transaction();
-    const users = await Profile.findAll({ where: { id: [clientId, contractorId] } });
-
-    const actualClientProfile = _.find(users, { id: clientId });
-    const actualContractorProfile = _.find(users, { id: contractorId });
+    const actualClientProfile = await Profile.findOne({ where: { id: clientId } });
 
     if (actualClientProfile.balance < jobWithContract.price) {
       throw new UserError('The user doesn\'t have enough money', 1000);
     }
 
-    actualClientProfile.balance -= jobWithContract.price;
-    actualContractorProfile.balance += jobWithContract.price;
-
     await Promise.all([
-      actualClientProfile.save({ transaction }),
-      actualContractorProfile.save({ transaction }),
+      Profile.update(
+        { balance: literal(`balance - ${jobWithContract.price}`) },
+        { where: { id: clientId } },
+        { transaction },
+      ),
+      Profile.update(
+        { balance: literal(`balance + ${jobWithContract.price}`) },
+        { where: { id: contractorId } },
+        { transaction },
+      ),
       Job.update({ paid: true }, { where: { id: jobWithContract.id } }, { transaction }),
     ]);
 

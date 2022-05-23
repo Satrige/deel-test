@@ -37,10 +37,6 @@ const findBestClients = async (req, res) => {
       end,
     });
 
-    if (!clients.length) {
-      return res.status(404).end('Maybe wrong period of time');
-    }
-
     res.json(clients);
   } catch (err) {
     if (err instanceof UserError && err.errorCode === 1000) {

@@ -7,8 +7,8 @@ const findUnpaid = async (req, res) => {
 
     const contracts = await findUnpaidJobsForActiveContracts({
       user: req.profile,
-      limit: limit ? parseInt(limit, 10) : null,
-      offset: offset ? parseInt(limit, 10) : null,
+      limit: limit && parseInt(limit, 10),
+      offset: offset && parseInt(limit, 10),
     });
 
     res.json(contracts);
