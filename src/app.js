@@ -9,6 +9,7 @@ const { getProfile } = require('./middlewares/getProfile');
 const contractsRouter = require('./routes/contracts');
 const jobsRouter = require('./routes/jobs');
 const balancesRouter = require('./routes/balances');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,6 +17,8 @@ app.use(pino);
 
 app.set('sequelize', sequelize);
 app.set('models', sequelize.models);
+
+app.use('/admin', adminRouter);
 
 app.use(getProfile);
 

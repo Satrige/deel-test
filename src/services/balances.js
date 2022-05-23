@@ -47,7 +47,7 @@ const incrementClientBalance = async ({ user, amount }) => {
     await transaction.commit();
   } catch (err) {
     logger.error({
-      message: 'updateClientBalance',
+      message: 'incrementClientBalance',
       params: { user, amount },
       err,
     });

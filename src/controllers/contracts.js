@@ -1,4 +1,5 @@
 const { getUserContractById, findUserNonTerminatedContracts } = require('../services/contracts');
+const UserError = require('../helpers/userError');
 
 const find = async (req, res) => {
   try {
@@ -12,6 +13,10 @@ const find = async (req, res) => {
 
     res.json(contracts);
   } catch (err) {
+    if (err instanceof UserError && err.errorCode === 1000) {
+      return res.status(500).end(err.message);
+    }
+
     return res.status(500).end();
   }
 };
@@ -26,6 +31,10 @@ const get = async (req, res) => {
 
     res.json(contract);
   } catch (err) {
+    if (err instanceof UserError && err.errorCode === 1000) {
+      return res.status(500).end(err.message);
+    }
+
     return res.status(500).end();
   }
 };
